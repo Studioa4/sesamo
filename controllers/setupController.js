@@ -39,7 +39,7 @@ export async function createImpianto(req, res) {
     await supabase.post('utenti_varchi', {
       utente_id: utente_id,
       impianto_id: impianto_id,
-      accesso_id: null, -- Nessun varco specifico inizialmente
+      accesso_id: null, // Nessun varco specifico inizialmente
       ruolo: 'amministratore',
       giorni_consentiti: null,
       ora_inizio: null,
