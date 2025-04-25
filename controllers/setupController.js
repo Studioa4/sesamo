@@ -7,6 +7,7 @@ const supabase = axios.create({
   baseURL: process.env.SUPABASE_URL + '/rest/v1/',
   headers: {
     apikey: process.env.SUPABASE_ANON_KEY,
+    Prefer: 'return=representation'  
     Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`
   }
 });
