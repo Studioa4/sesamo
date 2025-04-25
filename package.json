@@ -1,15 +1,17 @@
 {
-    "name": "sesamo",
-    "version": "1.0.0",
-    "description": "Backend API per Sesamo",
-    "main": "server.js",
-    "scripts": {
-      "start": "node server.js"
-    },
-    "dependencies": {
-      "express": "^4.18.2",
-      "cors": "^2.8.5",
-      "dotenv": "^16.0.3"
-    }
+  "name": "sesamo",
+  "version": "1.0.0",
+  "description": "Backend API Sesamo con autenticazione",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "bcrypt": "^5.1.0",
+    "jsonwebtoken": "^9.0.0",
+    "pg": "^8.11.1"
   }
-  
+}

@@ -14,7 +14,7 @@ exports.createImpianto = async (req, res) => {
       [nome, codice_attivazione]
     );
 
-    const utente = await client.query(
+    await client.query(
       'INSERT INTO sesamo.utenti (impianto_id, ruolo, cellulare, password_hash) VALUES ($1, $2, $3, $4)',
       [impianto.rows[0].id, 'amministratore', cellulare, hashed]
     );

@@ -1,9 +1,9 @@
-PACCHETTO SESAMO VERCEL DEFINITIVO
+SESAMO API - VERSIONE COMPLETA
 
-1. Vai su https://vercel.com > New Project.
-2. Carica questa cartella (server.js, vercel.json, package.json, .env.production).
-3. Imposta su Vercel tutte le Environment Variables da .env.production.
-4. In Settings > Domains, aggiungi: sesamo.brickly.cloud
-5. Dopo propagazione DNS, visita: https://sesamo.brickly.cloud
+API disponibili:
+- POST /api/setup    -> Creazione impianto + amministratore
+- POST /api/login    -> Login cellulare + password
+- POST /api/accessi  -> Registrazione accesso
+- GET /api/accessi   -> Lista accessi registrati
 
-La risposta alla route "/" sarà: "Sesamo API è attiva"
+Testabili via Postman su https://sesamo.brickly.cloud

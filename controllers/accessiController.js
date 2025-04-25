@@ -10,7 +10,8 @@ exports.logAccesso = async (req, res) => {
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    res.status(500).json({ error: 'Errore nel log accesso' });
+    console.error(err);
+    res.status(500).json({ error: 'Errore nella registrazione accesso' });
   }
 };
 
@@ -19,6 +20,7 @@ exports.getAccessi = async (req, res) => {
     const result = await pool.query('SELECT * FROM sesamo.accessi_log ORDER BY orario DESC');
     res.status(200).json(result.rows);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Errore nel recupero accessi' });
   }
 };
