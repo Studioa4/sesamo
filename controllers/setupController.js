@@ -31,7 +31,8 @@ export async function createImpianto(req, res) {
 
     res.status(201).json({ message: 'Impianto e amministratore creati con successo' });
   } catch (err) {
-    console.error(err.response?.data || err.message);
+    console.error('Errore completo:', JSON.stringify(err, null, 2));
     res.status(500).json({ error: 'Errore nella creazione impianto' });
   }
+  
 }
