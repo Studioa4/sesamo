@@ -4,8 +4,7 @@ import bcrypt from 'bcrypt';
 const supabase = axios.create({
   baseURL: process.env.SUPABASE_URL + '/rest/v1',
   headers: {
-    apikey: process.env.SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`, // solo questo basta
     'Content-Type': 'application/json',
     Prefer: 'return=representation'
   }
@@ -31,7 +30,7 @@ export async function createImpianto(req, res) {
 
     res.status(201).json({ message: 'Impianto e amministratore creati con successo' });
   } catch (err) {
-    console.error(err.response ? err.response.data : err.message);
+    console.error(err.response?.data || err.message);
     res.status(500).json({ error: 'Errore nella creazione impianto' });
   }
 }
