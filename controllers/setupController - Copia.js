@@ -12,28 +12,42 @@ const supabase = axios.create({
 });
 
 export async function createImpianto(req, res) {
-  const { nome, codice_attivazione, cellulare, password } = req.body;
+  const { nome, cognome, cellulare, email, impianto_nome, codice_attivazione, password } = req.body;
 
   try {
-    const impiantoRes = await supabase.post('impianti', {
+    // 1. Crea l'utente amministratore
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const utenteRes = await supabase.post('utenti', {
       nome,
+      cognome,
+      cellulare,
+      email
+    });
+
+    const utente_id = utenteRes.data[0].id;
+
+    // 2. Crea l'impianto collegato all'amministratore
+    const impiantoRes = await supabase.post('impianti', {
+      nome: impianto_nome,
       codice_attivazione
     });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const impianto_id = impiantoRes.data[0].id;
 
-    await supabase.post('utenti', {
-      impianto_id: impiantoRes.data[0].id,
+    // 3. Crea l'associazione amministratore-impianto in utenti_varchi
+    await supabase.post('utenti_varchi', {
+      utente_id: utente_id,
+      impianto_id: impianto_id,
+      accesso_id: null, // Nessun varco specifico inizialmente
       ruolo: 'amministratore',
-      cellulare,
-      password_hash: hashedPassword
+      giorni_consentiti: null,
+      ora_inizio: null,
+      ora_fine: null,
+      creato_da: null
     });
 
-    res.status(201).json({ 
-      message: 'Impianto e amministratore creati con successo',
-      impianto_id: impiantoRes.data[0].id
-    });
-    
+    res.status(201).json({ message: 'Impianto e amministratore creati con successo' });
   } catch (err) {
     console.error('Errore completo:', JSON.stringify(err, null, 2));
     res.status(500).json({ error: 'Errore nella creazione impianto' });
