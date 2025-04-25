@@ -1,13 +1,13 @@
 import axios from 'axios';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const supabase = axios.create({
-  baseURL: process.env.SUPABASE_URL + '/rest/v1',
+  baseURL: process.env.SUPABASE_URL + '/rest/v1/',
   headers: {
-    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`, // solo questo basta
     apikey: process.env.SUPABASE_ANON_KEY,
-    'Content-Type': 'application/json',
-    Prefer: 'return=representation'
+    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`
   }
 });
 
@@ -15,14 +15,14 @@ export async function createImpianto(req, res) {
   const { nome, codice_attivazione, cellulare, password } = req.body;
 
   try {
-    const impiantoRes = await supabase.post('/sesamo.impianti', {
+    const impiantoRes = await supabase.post('impianti', {
       nome,
       codice_attivazione
     });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await supabase.post('/sesamo.utenti', {
+    await supabase.post('utenti', {
       impianto_id: impiantoRes.data[0].id,
       ruolo: 'amministratore',
       cellulare,
@@ -34,5 +34,4 @@ export async function createImpianto(req, res) {
     console.error('Errore completo:', JSON.stringify(err, null, 2));
     res.status(500).json({ error: 'Errore nella creazione impianto' });
   }
-  
 }
