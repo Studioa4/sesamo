@@ -1,27 +1,39 @@
-const pool = require('../db/db');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import axios from 'axios';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
-exports.login = async (req, res) => {
+const supabase = axios.create({
+  baseURL: process.env.SUPABASE_URL + '/rest/v1',
+  headers: {
+    apikey: process.env.SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`
+  }
+});
+
+export async function login(req, res) {
   const { cellulare, password } = req.body;
 
   try {
-    const result = await pool.query(
-      'SELECT * FROM sesamo.utenti WHERE cellulare = $1 AND attivo = true',
-      [cellulare]
-    );
+    const { data } = await supabase.get('/sesamo.utenti', {
+      params: {
+        select: '*',
+        cellulare: `eq.${cellulare}`,
+        attivo: `eq.true`
+      }
+    });
 
-    if (result.rows.length === 0) return res.status(401).json({ error: 'Utente non trovato' });
+    if (data.length === 0) return res.status(401).json({ error: 'Utente non trovato' });
 
-    const user = result.rows[0];
+    const user = data[0];
     const valid = await bcrypt.compare(password, user.password_hash);
 
     if (!valid) return res.status(403).json({ error: 'Password errata' });
 
     const token = jwt.sign({ id: user.id, ruolo: user.ruolo }, process.env.JWT_SECRET, { expiresIn: '6h' });
+
     res.status(200).json({ token });
   } catch (err) {
-    console.error(err);
+    console.error(err.response ? err.response.data : err.message);
     res.status(500).json({ error: 'Errore nel login' });
   }
-};
+}

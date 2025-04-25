@@ -1,4 +1,4 @@
-SESAMO API - VERSIONE COMPLETA
+SESAMO API REST - VERSIONE FINALE
 
 API disponibili:
 - POST /api/setup    -> Creazione impianto + amministratore
@@ -6,4 +6,9 @@ API disponibili:
 - POST /api/accessi  -> Registrazione accesso
 - GET /api/accessi   -> Lista accessi registrati
 
-Testabili via Postman su https://sesamo.brickly.cloud
+Database collegato via Supabase REST API, compatibile Vercel.
+
+Configurare .env.production:
+- SUPABASE_URL
+- SUPABASE_ANON_KEY
+- JWT_SECRET

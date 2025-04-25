@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { createImpianto } from '../controllers/setupController.js';
+
 const router = express.Router();
-const { createImpianto } = require('../controllers/setupController');
 
 router.post('/', createImpianto);
 
-module.exports = router;
+export default router;

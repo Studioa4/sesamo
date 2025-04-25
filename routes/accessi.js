@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import { logAccesso, getAccessi } from '../controllers/accessiController.js';
+
 const router = express.Router();
-const { logAccesso, getAccessi } = require('../controllers/accessiController');
 
 router.post('/', logAccesso);
 router.get('/', getAccessi);
 
-module.exports = router;
+export default router;
