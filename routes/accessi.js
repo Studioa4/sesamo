@@ -1,9 +1,13 @@
 import express from 'express';
-import { logAccesso, getAccessi } from '../controllers/accessiController.js';
+import { configuraAccesso } from '../controllers/accessiConfiguraController.js';
+import { abilitaAccesso } from '../controllers/accessiAbilitaController.js';
 
 const router = express.Router();
 
-router.post('/', logAccesso);
-router.get('/', getAccessi);
+// Route per configurare un varco
+router.post('/configura', configuraAccesso);
+
+// Route per abilitare un utente ad aprire un varco
+router.post('/abilita', abilitaAccesso);
 
 export default router;
