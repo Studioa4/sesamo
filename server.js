@@ -8,6 +8,7 @@ import accessiRoutes from './routes/accessi.js';
 import utentiRoutes from './routes/utenti.js';
 import varchiRoutes from './routes/varchi.js';
 import storicoRoutes from './routes/storico.js';
+import resetPasswordRoutes from './routes/resetPassword.js';
 
 dotenv.config();
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api/accessi', accessiRoutes);
 app.use('/api/utenti', utentiRoutes);
 app.use('/api/varchi', varchiRoutes);
 app.use('/api/storico', storicoRoutes);
+app.use('/api/reset-password', resetPasswordRoutes);
 
 app.get('/', (req, res) => {
   res.send('Sesamo API REST è attiva');
