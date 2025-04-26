@@ -31,9 +31,11 @@ export async function openAccesso(req, res) {
 
     // Controlla giorno e ora
     const now = new Date();
-    const giornoCorrente = now.toLocaleString('it-IT', { weekday: 'short' }).toLowerCase().replace('.', '');
+    const giornoCorrente = now.toLocaleString('it-IT', { weekday: 'short' }).toLowerCase(); // es: 'lun', 'mar', ecc.
 
-    if (autorizzazione.giorni_consentiti && !autorizzazione.giorni_consentiti.includes(giornoCorrente)) {
+    const giornoFormato = giornoCorrente.replace('.', ''); // per sicurezza
+
+    if (autorizzazione.giorni_consentiti && !autorizzazione.giorni_consentiti.includes(giornoFormato)) {
       return res.status(403).json({ error: 'Accesso non consentito oggi' });
     }
 
@@ -45,13 +47,7 @@ export async function openAccesso(req, res) {
       }
     }
 
-    // Se tutti i controlli passano, registriamo il log di accesso
-    await supabase.post('accessi_log', {
-      utente_id,
-      accesso_id,
-      risultato: 'successo'
-    });
-
+    // Se tutti i controlli passano
     res.status(200).json({ message: 'Accesso consentito. Puoi aprire il varco!' });
 
   } catch (err) {
