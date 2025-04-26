@@ -7,8 +7,7 @@ const supabase = axios.create({
   baseURL: process.env.SUPABASE_URL + '/rest/v1/',
   headers: {
     apikey: process.env.SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
-    Prefer: 'return=representation'  // << aggiungilo qui
+    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`
   }
 });
 
@@ -23,7 +22,8 @@ export async function createImpianto(req, res) {
       nome,
       cognome,
       cellulare,
-      email
+      email,
+      password_hash: hashedPassword
     });
 
     const utente_id = utenteRes.data?.[0]?.id;
@@ -33,7 +33,7 @@ export async function createImpianto(req, res) {
       throw new Error("Utente non creato correttamente");
     }
 
-    // 2. Crea l'impianto
+    // 2. Crea l'impianto collegato
     const impiantoRes = await supabase.post('impianti', {
       nome: impianto_nome,
       codice_attivazione
@@ -46,7 +46,7 @@ export async function createImpianto(req, res) {
       throw new Error("Impianto non creato correttamente");
     }
 
-    // 3. Collega utente e impianto come amministratore
+    // 3. Collega utente a impianto come amministratore
     const collegamento = await supabase.post('utenti_varchi', {
       utente_id: utente_id,
       impianto_id: impianto_id,

@@ -7,7 +7,8 @@ const supabase = axios.create({
   baseURL: process.env.SUPABASE_URL + '/rest/v1/',
   headers: {
     apikey: process.env.SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`
+    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+    Prefer: 'return=representation'  // << aggiungilo qui
   }
 });
 
@@ -25,21 +26,31 @@ export async function createImpianto(req, res) {
       email
     });
 
-    const utente_id = utenteRes.data[0].id;
+    const utente_id = utenteRes.data?.[0]?.id;
+    console.log('✅ Utente creato:', utente_id);
 
-    // 2. Crea l'impianto collegato all'amministratore
+    if (!utente_id) {
+      throw new Error("Utente non creato correttamente");
+    }
+
+    // 2. Crea l'impianto
     const impiantoRes = await supabase.post('impianti', {
       nome: impianto_nome,
       codice_attivazione
     });
 
-    const impianto_id = impiantoRes.data[0].id;
+    const impianto_id = impiantoRes.data?.[0]?.id;
+    console.log('✅ Impianto creato:', impianto_id);
 
-    // 3. Crea l'associazione amministratore-impianto in utenti_varchi
-    await supabase.post('utenti_varchi', {
+    if (!impianto_id) {
+      throw new Error("Impianto non creato correttamente");
+    }
+
+    // 3. Collega utente e impianto come amministratore
+    const collegamento = await supabase.post('utenti_varchi', {
       utente_id: utente_id,
       impianto_id: impianto_id,
-      accesso_id: null, // Nessun varco specifico inizialmente
+      accesso_id: null,
       ruolo: 'amministratore',
       giorni_consentiti: null,
       ora_inizio: null,
@@ -47,9 +58,12 @@ export async function createImpianto(req, res) {
       creato_da: null
     });
 
+    console.log('✅ Collegamento utenti_varchi creato:', collegamento.data);
+
     res.status(201).json({ message: 'Impianto e amministratore creati con successo' });
+
   } catch (err) {
-    console.error('Errore completo:', JSON.stringify(err, null, 2));
+    console.error('❌ Errore dettagliato:', JSON.stringify(err.response?.data || err.message || err, null, 2));
     res.status(500).json({ error: 'Errore nella creazione impianto' });
   }
 }
