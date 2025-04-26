@@ -5,6 +5,9 @@ import dotenv from 'dotenv';
 import setupRoutes from './routes/setup.js';
 import loginRoutes from './routes/login.js';
 import accessiRoutes from './routes/accessi.js';
+import utentiRoutes from './routes/utenti.js';
+import varchiRoutes from './routes/varchi.js';
+import storicoRoutes from './routes/storico.js';
 
 dotenv.config();
 const app = express();
@@ -14,6 +17,9 @@ app.use(express.json());
 app.use('/api/setup', setupRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/accessi', accessiRoutes);
+app.use('/api/utenti', utentiRoutes);
+app.use('/api/varchi', varchiRoutes);
+app.use('/api/storico', storicoRoutes);
 
 app.get('/', (req, res) => {
   res.send('Sesamo API REST è attiva');
