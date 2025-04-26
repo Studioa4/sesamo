@@ -7,7 +7,8 @@ const supabase = axios.create({
   baseURL: process.env.SUPABASE_URL + '/rest/v1/',
   headers: {
     apikey: process.env.SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`
+    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+    Prefer: 'return=representation'
   }
 });
 
@@ -26,8 +27,10 @@ export async function createImpianto(req, res) {
       password_hash: hashedPassword
     });
 
+    console.log('📦 Response utenti:', JSON.stringify(utenteRes.data, null, 2));
+
     const utente_id = utenteRes.data?.[0]?.id;
-    console.log('✅ Utente creato:', utente_id);
+    console.log('✅ Utente ID:', utente_id);
 
     if (!utente_id) {
       throw new Error("Utente non creato correttamente");
@@ -39,8 +42,10 @@ export async function createImpianto(req, res) {
       codice_attivazione
     });
 
+    console.log('📦 Response impianto:', JSON.stringify(impiantoRes.data, null, 2));
+
     const impianto_id = impiantoRes.data?.[0]?.id;
-    console.log('✅ Impianto creato:', impianto_id);
+    console.log('✅ Impianto ID:', impianto_id);
 
     if (!impianto_id) {
       throw new Error("Impianto non creato correttamente");
@@ -48,8 +53,8 @@ export async function createImpianto(req, res) {
 
     // 3. Collega utente a impianto come amministratore
     const collegamento = await supabase.post('utenti_varchi', {
-      utente_id: utente_id,
-      impianto_id: impianto_id,
+      utente_id,
+      impianto_id,
       accesso_id: null,
       ruolo: 'amministratore',
       giorni_consentiti: null,
@@ -63,7 +68,11 @@ export async function createImpianto(req, res) {
     res.status(201).json({ message: 'Impianto e amministratore creati con successo' });
 
   } catch (err) {
-    console.error('❌ Errore dettagliato:', JSON.stringify(err.response?.data || err.message || err, null, 2));
+    console.error('❌ Errore dettagliato:', JSON.stringify({
+      status: err.response?.status,
+      data: err.response?.data,
+      headers: err.response?.headers
+    }, null, 2));
     res.status(500).json({ error: 'Errore nella creazione impianto' });
   }
 }
