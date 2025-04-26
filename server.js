@@ -10,6 +10,7 @@ import varchiRoutes from './routes/varchi.js';
 import storicoRoutes from './routes/storico.js';
 import resetPasswordRoutes from './routes/resetPassword.js';
 import testBcryptRoutes from './routes/testBcrypt.js';
+import createTestUserRoutes from './routes/createTestUser.js';
 
 dotenv.config();
 const app = express();
@@ -24,6 +25,7 @@ app.use('/api/varchi', varchiRoutes);
 app.use('/api/storico', storicoRoutes);
 app.use('/api/reset-password', resetPasswordRoutes);
 app.use('/api/test-bcrypt', testBcryptRoutes);
+app.use('/api/create-test-user', createTestUserRoutes);
 
 app.get('/', (req, res) => {
   res.send('Sesamo API REST è attiva');
