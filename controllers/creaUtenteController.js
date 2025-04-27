@@ -37,14 +37,14 @@ export async function creaUtente(req, res) {
           apikey: supabaseApiKey,
           Authorization: `Bearer ${supabaseApiKey}`,
           "Content-Type": "application/json",
-          Prefer: "return=representation"
+          Prefer: "return=representation" // ✅ Importantissimo!
         }
       }
     );
 
     res.status(201).json({ message: 'Utente creato con successo!', utente: response.data[0] });
   } catch (err) {
-    console.error('Errore dettagliato:', err.response?.data || err.message);
+    console.error('Errore dettagliato Supabase:', err.response?.data || err.message);
     res.status(500).json({ error: 'Errore creazione utente' });
   }
 }
