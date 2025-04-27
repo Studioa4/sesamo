@@ -35,13 +35,13 @@ export async function creaUtente(req, res) {
     });
 
     if (error) {
-      console.error('Errore creazione utente:', error);
+      console.error('Errore Supabase:', error);
       return res.status(500).json({ error: 'Errore creazione utente' });
     }
 
     res.status(201).json({ message: 'Utente creato con successo!', utente: data[0] });
   } catch (err) {
-    console.error('Errore interno:', err.response?.data || err.message);
+    console.error('Errore server:', err.response?.data || err.message);
     res.status(500).json({ error: 'Errore interno server' });
   }
 }
