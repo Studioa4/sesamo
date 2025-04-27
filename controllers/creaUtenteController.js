@@ -9,7 +9,8 @@ const supabase = axios.create({
   baseURL: process.env.SUPABASE_URL + '/rest/v1/',
   headers: {
     apikey: process.env.SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`
+    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+    "Content-Type": "application/json"
   }
 });
 
@@ -23,25 +24,27 @@ export async function creaUtente(req, res) {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const { data, error } = await supabase.post('utenti', {
-      nome,
-      cognome,
-      cellulare,
-      email,
-      password_hash: hashedPassword,
-      ruolo,
-      attivo: true,
-      superadmin: false
-    });
+    const { data, error } = await supabase.post('utenti', 
+      {
+        nome,
+        cognome,
+        cellulare,
+        email,
+        password_hash: hashedPassword,
+        ruolo,
+        attivo: true,
+        superadmin: false
+      }
+    );
 
     if (error) {
-      console.error('Errore Supabase:', error);
+      console.error('Errore creazione utente in Supabase:', error);
       return res.status(500).json({ error: 'Errore creazione utente' });
     }
 
     res.status(201).json({ message: 'Utente creato con successo!', utente: data[0] });
   } catch (err) {
-    console.error('Errore server:', err.response?.data || err.message);
+    console.error('Errore interno server:', err.response?.data || err.message);
     res.status(500).json({ error: 'Errore interno server' });
   }
 }
