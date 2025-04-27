@@ -40,7 +40,7 @@ export async function creaUtente(req, res) {
 
     res.status(201).json({ message: 'Utente creato con successo!', utente: response.data[0] });
   } catch (err) {
-    console.error('Errore creazione utente:', err.response?.data || err.message);
+    console.error('Errore dettagliato Supabase:', err.response?.data || err.message);
     res.status(500).json({ error: 'Errore creazione utente' });
   }
 }
