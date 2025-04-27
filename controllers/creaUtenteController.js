@@ -5,15 +5,8 @@ import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const supabase = axios.create({
-  baseURL: process.env.SUPABASE_URL + '/rest/v1/',
-  headers: {
-    apikey: process.env.SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
-    "Content-Type": "application/json",
-    Prefer: "return=representation" // ✅ Aggiunto per risposta dopo inserimento
-  }
-});
+const supabaseUrl = process.env.SUPABASE_URL + '/rest/v1/';
+const supabaseApiKey = process.env.SUPABASE_ANON_KEY;
 
 export async function creaUtente(req, res) {
   const { nome, cognome, cellulare, email, password, ruolo } = req.body;
@@ -25,22 +18,33 @@ export async function creaUtente(req, res) {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const response = await supabase.post('utenti', [
+    const response = await axios.post(
+      supabaseUrl + 'utenti',
+      [
+        {
+          nome,
+          cognome,
+          cellulare,
+          email,
+          password_hash: hashedPassword,
+          ruolo,
+          attivo: true,
+          superadmin: false
+        }
+      ],
       {
-        nome,
-        cognome,
-        cellulare,
-        email,
-        password_hash: hashedPassword,
-        ruolo,
-        attivo: true,
-        superadmin: false
+        headers: {
+          apikey: supabaseApiKey,
+          Authorization: `Bearer ${supabaseApiKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation"
+        }
       }
-    ]);
+    );
 
     res.status(201).json({ message: 'Utente creato con successo!', utente: response.data[0] });
   } catch (err) {
-    console.error('Errore dettagliato Supabase:', err.response?.data || err.message);
+    console.error('Errore dettagliato:', err.response?.data || err.message);
     res.status(500).json({ error: 'Errore creazione utente' });
   }
 }
